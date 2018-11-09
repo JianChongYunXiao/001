@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .error{
+            border:1px solid red；
+        }
+        .ok{
+            border:1px solid green;
+        }
+    </style>
+</head>
+<body>
+    邮箱:<input type="text" id="txt"><span id="s">0字</span>
+    <textarea name="" id="txt" cols="60" rows="20">
+        <div class="rolling txtMarquee-top">
+            <div class="unit bd">
+                <div class="tempWrap">
+                    <div class="tempWrap" style="overflow:hidden; position:relative; height:494px">
+                        <ul class="grid infoList" style="height: 2090px; position: relative; padding: 0px; margin: 0px; top: -262px;">
+                            <li style="height:38px;" class="clone">
+                                <span>高*</span>
+                                <span>河南农业大学</span>
+                                <span>生物工程</span>
+                                <span>阿里巴巴</span>
+                                <span>18000/月</span>
+                                <span>杭州</span>
+                            </li>
+                            <li style="height:38px;">
+                                <span>刘*</span>
+                                <span>宝鸡文理学院</span>
+                                <span>电子信息</span>
+                                <span></span>
+                                <span>30000/月</span>
+                                <span>北京</span>
+                            </li>
+                            <li style="height:38px;">
+                                <span>申*</span>
+                                <span>南京信息工程大学</span>
+                                <span>电子科技与技术</span>
+                                <span>亚信科技</span>
+                                <span>27000/月</span>
+                                <span>北京</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </textarea>
+    <script>
+        // 正则应用
+
+        let str = 'a1ca2ca3ca4ca5ca6ca7ca8ca9c'
+        // 用正则的方法截取a4c
+        console.log(str.match(/a[4]c/))  //  此处输出[a4c,在整体字符串中开头第一个所在的索引；整体的字符串；undefined]
+        
+        // 用正则的方法截取数据
+        let news = txt.value.replace(/<[^>]+>/g,'')  
+        //变量news 为 txt是DOM对象，txt里面的值（）内的内容  代表txt的值里<>里面的内容
+        //包括<> 被空字符串替换  这样，news的值就是剔除标签后的真正有价值的东西了。
+        console.log(news)  //  此处输出的就是剔除标签后的文字部分。
+        
+        //正则计算平均薪资
+        let n = 0;          //  在全局创建一个变量 n 
+        let sum = 0;        //   在全局创建一个变量 sum
+        let news1 = news.replace(/(\d+)\/月/g,function($0,$1){
+            n++;             // 运行一次 n 自增一次   n为全局变量，在外界能够提取运行了几次
+            sum += $1*1;     // $1为符合正则要求的内容 sum 为全局变量，每次运行后sum的值就为薪酬的合计
+                             //  此处*1  是因为$1 本身为字符串，*1后数据类型变为数字类型。可进行加减
+        });
+        let s = '平均薪资：'+(sum/n).toFixed(2)+'大洋';  // 字符串拼接，输出：平均薪资XXX大洋
+                                    // toFixed 为小数后取几位，取几位括号里写数字几
+        console.log(s)
+
+        // 正则边界符   \b
+        let str1 = 'sada  sd sds';
+        console.log(str1.replace(/\b/g,'|'))  // => '|sada|  |sd| |sds|'
+
+        // 下列字符串中哪些是连续的字符，找出来并放到数组中
+        let str3 = 'd7ssssdssdgsad61iiii11w000mxwww1i'
+        console.log(str3.match(/(\w)\1+/g));  //  新建一个数组，每一组符合正则条件的字符串当做一项放进数组中。
+    
+        // 找出谁最多
+        let str4 = 'dnsasudhusadssasdgsjzzzzzzzdgddsjsddhaslfdiusadlhsdsfudahsful';
+        let n = 0;   //  创建一个值为数字类型的变量 n
+        let name = '';   // 创建一个值为字符串类型的变量  name
+        let str5 = str4.split('').sort().join(''); // 新建一个变量字符串，值为：str4的值每一个当做一项放进一个数组中
+                                                   // 然后将数组中的每项按照Unicode码排序，最后将这个数组变成一个大的字符串
+        str5.replace(/([a-z])\1+/g,function($0,$1){ // 在str5这个按顺序排雷的新字符串中找到符合正则条件的内容，有符合的字符串就运行下面的函数。
+            console.log('$0:'+$0,'$1：'+ $1)   // 当遇到有重复的项时，按照要求打印
+            if (n<$0.length) {                 // 每次如果 n 的值小于每次的重复项的长度
+                n = $0.length;                // 那么 n 的值为此次重复项的长度，n 为全局变量，所以n的值一直是所有重复项的长度的最大值
+                name = $1;                    // 全局变量name的值为  重复项最多的那个字符串
+            }
+        });
+        console.log(n,name)        //  输出长度 和 最多的字符串
+        
+
+        // 做一个写邮箱的框，要求写的邮箱符合要求。  
+        txt.oninput = function(){     //   oninput：当用户在焦点位置进行操作时被触发
+            s.innerHTML = this.value.length + '字';  // s 为尾部计算字数的东西，s 的内容 为这个元素的值得长度 加'字'   显示的是输入内容的长度。
+            if (/^[A-Za-z]\w{3,17}@[1-9A-Za-z]{2,8}\.(com|cn|net)$/.test(this.value.trim())) { //  判断输入的内容是否有符合正则的内容，符合就进行下面的操作，
+                this.classList.remove('error');   //满足条件后， 触发条件的元素 删除时，的类名赋值为 'error'   在css中有它的样式
+                this.classList.add('ok');       // 满足条件后，触发条件的元素 添加时，的类名赋值为'ok'   在css中有它的样式。
+            }else{                           // 否则（不符合条件）就进行下面的操作。
+                this.classList.remove('ok')    //  不满足条件时，触发条件的元素 删除时，的类名赋值为'ok'  在出生时中有它的样式
+                this.classList.add('error');   // 不满足条件时，触发条件的元素 添加时，的类名赋值为'error'  在出生时中有它的样式
+            }
+            if(!this.value.length)this.className = '';   // 如果输出值的长度为0时， this的类名为空字符串。
+        }
+
+    
+    </script>
+</body>
+</html>
